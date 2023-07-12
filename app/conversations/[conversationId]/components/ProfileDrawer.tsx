@@ -8,6 +8,7 @@ import { Conversation, User } from "@prisma/client";
 import { format } from "date-fns";
 import { Fragment, useMemo, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
+import ConfirmModal from "./ConfirmModal";
 
 interface ProfileDrawerProps {
   isOpen: boolean;
@@ -23,7 +24,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
   data,
 }) => {
   const otherUser = useOtherUser(data);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const joinedDate = useMemo(() => {
     return format(new Date(otherUser.createdAt), "PP");
@@ -43,16 +44,19 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
 
   return (
     <>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+      />
+      {/* <div
           className='
               bg-white
               p-5
             '
         >
           <p>Hello Modal!</p>
-        </div>
-      </Modal>
+        </div> */}
+
       <Transition.Root show={isOpen} as={Fragment}>
         <Dialog as='div' className='relative z-50' onClose={onClose}>
           <Transition.Child
@@ -98,6 +102,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                   enterFrom='translate-x-full'
                   enterTo='translate-x-0'
                   leave='transform transition ease-in-out duration-500'
+                  leaveFrom='translate-x-0'
                   leaveTo='translate-x-full'
                 >
                   <Dialog.Panel
@@ -183,7 +188,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                         '
                           >
                             <div
-                              onClick={() => setIsModalOpen(true)}
+                              onClick={() => setConfirmOpen(true)}
                               className='
                               flex flex-col gap-3 items-center cursor-pointer
                               hover:opacity-75
