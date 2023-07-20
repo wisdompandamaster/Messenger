@@ -7,6 +7,8 @@ import { useState, useRef, useEffect } from "react";
 
 import MessageBox from "./MessageBox";
 import axios from "axios";
+import { pusherClient } from "@/app/libs/pusher";
+import { find } from "lodash";
 
 interface BodyProps {
   initialMessages: FullMessageType[];
@@ -22,7 +24,42 @@ const Body: React.FC<BodyProps> = ({ initialMessages }) => {
 
   // body组件打开且conversationId刷新时，说明看过对应最新消息，发到后端
   useEffect(() => {
-    axios.post(`/api/conversations/${conversationId}/seen`, {});
+    axios.post(`/api/conversations/${conversationId}/seen`);
+  }, [conversationId]);
+
+  // pusher实现实时信息更新
+  useEffect(() => {
+    // 订阅 channel
+    pusherClient.subscribe(conversationId);
+    // 有最新消息，直接滑倒最底部
+    bottomRef?.current?.scrollIntoView();
+
+    // 收到消息后的处理函数
+    const messageHandler = (message: FullMessageType) => {
+      // 同时回复哪些人看了消息
+      axios.post(`/api/conversations/${conversationId}/seen`);
+
+      setMessages(current => {
+        // 比较 current 的信息里面是否有最新的 message id
+        // lodash find 比较数组里的对象
+        if (find(current, { id: message.id })) {
+          return current;
+        }
+        // 有更新就更新
+        return [...current, message];
+      });
+
+      bottomRef?.current?.scrollIntoView();
+    };
+
+    // 绑定要接收的消息,然后处理
+    pusherClient.bind("messages:new", messageHandler);
+
+    // 组件销毁后解除监听和绑定，防止内存泄漏
+    return () => {
+      pusherClient.unsubscribe(conversationId);
+      pusherClient.unbind("messages:new", messageHandler);
+    };
   }, [conversationId]);
 
   return (

@@ -1,6 +1,7 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
+import { pusherServer } from "@/app/libs/pusher";
 
 export async function POST(request: Request) {
   try {
@@ -60,6 +61,23 @@ export async function POST(request: Request) {
           },
         },
       },
+    });
+
+    // Pusher Server 端
+    // 推送新消息
+    // 每一个监听这个 conversationId channel 的  都会收到更新
+    await pusherServer.trigger(conversationId, "messages:new", newMessage);
+
+    const lastMessage =
+      updatedConversation.messages[updatedConversation.messages.length - 1];
+
+    // 如果在群组里，每个人都要推送
+    updatedConversation.users.map(user => {
+      // 推送最后一条消息，用来显示在sidebar列表里
+      pusherServer.trigger(user.email!, "conversation:update", {
+        id: conversationId,
+        messages: [lastMessage],
+      });
     });
 
     return NextResponse.json(newMessage);
