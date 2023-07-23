@@ -4,13 +4,16 @@ import clsx from "clsx";
 import useConversation from "@/app/hooks/useConversation";
 import { FullConversationType } from "@/app/types";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
 
 import ConversationBox from "./ConversationBox";
 import GroupChatModal from "./GroupChatModal";
 import { User } from "@prisma/client";
 import Users from "@/app/users/page";
+import { useSession } from "next-auth/react";
+import { pusherClient } from "@/app/libs/pusher";
+import { find } from "lodash";
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
@@ -21,12 +24,45 @@ const ConversationList: React.FC<ConversationListProps> = ({
   initialItems,
   users,
 }) => {
+  const session = useSession();
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const router = useRouter();
 
   const { conversationId, isOpen } = useConversation();
+
+  // pusherKey, 就是当前用户email
+  const pusherKey = useMemo(() => {
+    return session.data?.user?.email;
+  }, [session.data?.user?.email]);
+
+  useEffect(() => {
+    if (!pusherKey) {
+      return;
+    }
+
+    // 订阅对应属于自己的 channel
+    pusherClient.subscribe(pusherKey);
+
+    // 自己创建对话时，让对面的conversationList 里面也实时出现
+    const newHandler = (conversation: FullConversationType) => {
+      setItems(current => {
+        if (find(current, { id: conversation.id })) {
+          return current;
+        }
+
+        return [conversation, ...current];
+      });
+    };
+
+    pusherClient.bind("conversation:new", newHandler);
+
+    return () => {
+      pusherClient.unsubscribe(pusherKey);
+      pusherClient.unbind("conversation:new", newHandler);
+    };
+  }, [pusherKey]);
 
   return (
     <>
