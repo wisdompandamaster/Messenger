@@ -11,7 +11,7 @@ const getCurrentUser = async () => {
       return null;
     }
 
-    // 数据库中找出匹配的当前用户
+    // 数据库中找出 email 对应的当前用户
     const currentUser = await prisma.user.findUnique({
       where: {
         email: session.user.email as string,
@@ -22,6 +22,7 @@ const getCurrentUser = async () => {
       return null;
     }
 
+    // 根据session 中的邮箱，在数据库中找到对应用户然后返回user的信息
     return currentUser;
   } catch (error: any) {
     return null;

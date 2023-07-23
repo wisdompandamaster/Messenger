@@ -2,7 +2,7 @@ import prisma from "@/app/libs/prismadb";
 
 import getSession from "./getSession";
 
-// 获取好友对话列表
+// 获取所有用户列表，除了自己
 const getUsers = async () => {
   const session = await getSession();
 

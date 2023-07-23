@@ -1,6 +1,7 @@
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "./getCurrentUser";
 
+// 返回所有包含当前用户的conversation，包括conversation 的 users , messages 的具体信息
 const getConversations = async () => {
   const currentUser = await getCurrentUser();
 
@@ -10,7 +11,7 @@ const getConversations = async () => {
 
   try {
     const conversations = await prisma.conversation.findMany({
-      // 按照最新消息的时间排序
+      // 按照conversation 中 的 last Message 字段排序
       orderBy: {
         lastMessageAt: "desc",
       },
