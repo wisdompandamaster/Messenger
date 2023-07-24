@@ -56,11 +56,30 @@ const ConversationList: React.FC<ConversationListProps> = ({
       });
     };
 
+    const updateHandler = (conversation: FullConversationType) => {
+      setItems(current =>
+        current.map(currentConversation => {
+          // 找到list中要更新最新消息的那个
+          if (currentConversation.id === conversation.id) {
+            return {
+              ...currentConversation,
+              messages: conversation.messages,
+            };
+          }
+
+          return currentConversation;
+        })
+      );
+    };
+
     pusherClient.bind("conversation:new", newHandler);
+    // 用来更新list里显示lastMessage
+    pusherClient.bind("conversation:update", updateHandler);
 
     return () => {
       pusherClient.unsubscribe(pusherKey);
       pusherClient.unbind("conversation:new", newHandler);
+      pusherClient.unbind("conversation:update", updateHandler);
     };
   }, [pusherKey]);
 
