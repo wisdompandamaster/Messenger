@@ -1,6 +1,7 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
+import { pusherServer } from "@/app/libs/pusher";
 
 interface IParams {
   conversationId?: string;
@@ -38,6 +39,18 @@ export async function DELETE(
           hasSome: [currentUser.id],
         },
       },
+    });
+
+    // 对于对话里的每一个用户，都触发，对话会从它们列表中消失
+    // 自己删掉对话后，别人那里的也去掉
+    existingConversation.users.forEach(user => {
+      if (user.email) {
+        pusherServer.trigger(
+          user.email,
+          "conversation:remove",
+          existingConversation
+        );
+      }
     });
 
     return NextResponse.json(deletedConversation);

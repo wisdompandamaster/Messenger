@@ -72,16 +72,30 @@ const ConversationList: React.FC<ConversationListProps> = ({
       );
     };
 
+    // 这里去掉了conversaitonList的之后，再从[conversationId]跳转回去
+    const removeHandler = (conversation: FullConversationType) => {
+      setItems(current => {
+        return [...current.filter(convo => convo.id !== conversation.id)];
+      });
+
+      // 如果body出于要删除的conversation页面，从[conversationId]跳转到/conversations
+      if (conversationId === conversation.id) {
+        router.push("/conversations");
+      }
+    };
+
     pusherClient.bind("conversation:new", newHandler);
     // 用来更新list里显示lastMessage
     pusherClient.bind("conversation:update", updateHandler);
+    pusherClient.bind("conversation:remove", removeHandler);
 
     return () => {
       pusherClient.unsubscribe(pusherKey);
       pusherClient.unbind("conversation:new", newHandler);
       pusherClient.unbind("conversation:update", updateHandler);
+      pusherClient.unbind("conversation:remove", removeHandler);
     };
-  }, [pusherKey]);
+  }, [pusherKey, conversationId, router]);
 
   return (
     <>
