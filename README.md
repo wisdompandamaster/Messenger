@@ -56,3 +56,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - axios
 - headlessui/react
 - react-spinners
+- zustand (轻量状态管理工具)
