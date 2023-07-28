@@ -8,7 +8,7 @@ interface ActiveListStore {
   set: (id: string[]) => void;
 }
 
-// 创建一个全局唯一 store
+// 创建一个全局唯一 store，管理登录状态的 members
 const useActiveList = create<ActiveListStore>(set => ({
   members: [],
   //  添加
