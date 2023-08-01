@@ -42,7 +42,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 - MongoDB
 - Pusher
 - Typescript
-- cloudinary.com
+- cloudinary.com (图床)
+- cloud.mongodb.com (在线MongoDB数据库-HK) 
+- Pusher (webscket服务-Singapore)
+- Vercel (在线部署-分布式挺快)
 
 #### Some packages
 

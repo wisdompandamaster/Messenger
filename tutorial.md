@@ -9,7 +9,6 @@
 - **最后记得解绑，防止内存泄漏**
 `pusherClient.unbind("your-event", handlerEvent)` 
 
-<!-- TODO:完成结构 -->
 ### 项目数据库结构
 
 - Prisma 项目的 ORM
@@ -121,3 +120,4 @@ model Message {
   sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
 }
 ```
+
