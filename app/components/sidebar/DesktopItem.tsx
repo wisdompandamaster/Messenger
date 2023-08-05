@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import Link from "next/link";
+import Badge from "../Badge";
 
 interface DesktopItemProps {
   label: string;
@@ -9,6 +10,7 @@ interface DesktopItemProps {
   href: string;
   onClick?: () => void;
   active?: boolean;
+  badge: number | boolean;
 }
 
 const DesktopTtem: React.FC<DesktopItemProps> = ({
@@ -17,6 +19,7 @@ const DesktopTtem: React.FC<DesktopItemProps> = ({
   href,
   onClick,
   active,
+  badge,
 }) => {
   const handleClick = () => {
     if (onClick) {
@@ -30,6 +33,7 @@ const DesktopTtem: React.FC<DesktopItemProps> = ({
         className={clsx(
           `
             group
+            relative
             flex
             gap-x-3
             rounded-md
@@ -45,6 +49,7 @@ const DesktopTtem: React.FC<DesktopItemProps> = ({
       >
         <Icon className='h-6 w-6 shrink-0' />
         <span className='sr-only'>{label}</span>
+        <Badge count={badge} />
       </Link>
     </li>
   );

@@ -33,6 +33,7 @@ const MobileFooter = () => {
           href={route.href}
           active={route.active}
           icon={route.icon}
+          badge={route.badge}
           onClick={route.onClick}
         />
       ))}

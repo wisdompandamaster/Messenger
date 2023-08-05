@@ -2,18 +2,21 @@
 
 import clsx from "clsx";
 import Link from "next/link";
+import Badge from "../Badge";
 
 interface MobileItemProps {
   icon: any;
   href: string;
   onClick?: () => void;
   active?: boolean;
+  badge: number | boolean;
 }
 
 const MobileItem: React.FC<MobileItemProps> = ({
   icon: Icon,
   href,
   active,
+  badge,
   onClick,
 }) => {
   const handleClick = () => {
@@ -29,6 +32,7 @@ const MobileItem: React.FC<MobileItemProps> = ({
         `
             group
             flex
+            relative
             gap-x-3
             w-full
             justify-center
@@ -43,6 +47,7 @@ const MobileItem: React.FC<MobileItemProps> = ({
       )}
     >
       <Icon className='h-6 w-6' />
+      <Badge count={badge} />
     </Link>
   );
 };
