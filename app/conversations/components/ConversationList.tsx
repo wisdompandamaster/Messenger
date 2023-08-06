@@ -64,6 +64,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
             return {
               ...currentConversation,
               messages: conversation.messages,
+              unreadCount: conversation.unreadCount,
             };
           }
 
@@ -96,6 +97,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
       pusherClient.unbind("conversation:remove", removeHandler);
     };
   }, [pusherKey, conversationId, router]);
+
+  console.log("组件conversationList");
 
   return (
     <>

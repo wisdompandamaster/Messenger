@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Conversation, Message, User } from "@prisma/client";
 import { format } from "date-fns";
@@ -9,9 +9,9 @@ import clsx from "clsx";
 
 import { FullConversationType } from "@/app/types";
 import useOtherUser from "@/app/hooks/useOtherUser";
-import { id } from "date-fns/locale";
 import Avatar from "@/app/components/Avatar";
 import AvatarGroup from "@/app/components/AvatarGroup";
+import Badge from "@/app/components/Badge";
 
 interface ConversationBoxProps {
   data: FullConversationType;
@@ -26,7 +26,6 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   const otherUser = useOtherUser(data);
   const session = useSession();
   const router = useRouter();
-
   const handleClick = useCallback(() => {
     router.push(`/conversations/${data.id}`);
   }, [data.id, router]);
@@ -128,6 +127,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
             className={clsx(
               `
                truncate
+               w-5/6
                text-sm
             `,
               hasSeen ? "text-gray-500" : "text-black font-medium"
@@ -135,6 +135,14 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
           >
             {lastMessageText}
           </p>
+          <div
+            className='
+              relative
+              -top-5
+            '
+          >
+            <Badge count={data.unreadCount!} danger />
+          </div>
         </div>
       </div>
     </div>

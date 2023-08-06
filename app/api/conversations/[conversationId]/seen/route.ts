@@ -1,4 +1,5 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import getUnreadCountInConversation from "@/app/actions/getUnreadCountInConversation";
 import prisma from "@/app/libs/prismadb";
 import { pusherServer } from "@/app/libs/pusher";
 import { NextResponse } from "next/server";
@@ -63,10 +64,16 @@ export async function POST(request: Request, { params }: { params: IParams }) {
       },
     });
 
+    let unreadCount = await getUnreadCountInConversation(
+      currentUser.id,
+      conversationId!
+    );
+
     // Update all connections with new seen
     await pusherServer.trigger(currentUser.email, "conversation:update", {
       id: conversationId,
       messages: [updatedMessage],
+      unreadCount: unreadCount,
     });
 
     // If user has already seen the message, no need to go further

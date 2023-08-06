@@ -4,7 +4,11 @@ import useConversation from "@/app/hooks/useConversation";
 import useRoutes from "@/app/hooks/useRoutes";
 import MobileItem from "./MobileItem";
 
-const MobileFooter = () => {
+interface MobileFooterProps {
+  unreadMessageCount: number;
+}
+
+const MobileFooter: React.FC<MobileFooterProps> = ({ unreadMessageCount }) => {
   const routes = useRoutes();
   const { isOpen } = useConversation();
 
@@ -33,7 +37,7 @@ const MobileFooter = () => {
           href={route.href}
           active={route.active}
           icon={route.icon}
-          badge={route.badge}
+          badge={route.badge && unreadMessageCount}
           onClick={route.onClick}
         />
       ))}

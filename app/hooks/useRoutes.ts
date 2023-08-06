@@ -16,14 +16,14 @@ const useRoutes = () => {
         label: "Chat",
         href: "/conversations",
         icon: HiChat,
-        badge: 96,
+        badge: true,
         active: pathname === "/conversations" || !!conversationId,
       },
       {
         label: "User",
         href: "/users",
         icon: HiUsers,
-        badge: 99,
+        badge: true,
         active: pathname === "/users",
       },
       {

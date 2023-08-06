@@ -10,13 +10,15 @@ import SettingsModal from "./SettingsModal";
 
 interface DesktopSidebarProps {
   currentUser: User;
+  unreadMessageCount: number;
 }
 
-const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser }) => {
+const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
+  currentUser,
+  unreadMessageCount,
+}) => {
   const routes = useRoutes();
   const [isOpen, setIsOpen] = useState(false);
-
-  console.log(currentUser);
 
   return (
     <>
@@ -67,7 +69,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ currentUser }) => {
                 label={item.label}
                 icon={item.icon}
                 active={item.active}
-                badge={item.badge}
+                badge={item.badge && unreadMessageCount}
                 onClick={item.onClick}
               />
             ))}

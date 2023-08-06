@@ -5,9 +5,10 @@ import clsx from "clsx";
 interface BadgeProps {
   // 设置为 false, 或数字为 0 时不显示 badge
   count: number | boolean;
+  danger?: boolean;
 }
 
-const Badge: React.FC<BadgeProps> = ({ count }) => {
+const Badge: React.FC<BadgeProps> = ({ count, danger }) => {
   return (
     <div
       className={clsx(
@@ -19,7 +20,6 @@ const Badge: React.FC<BadgeProps> = ({ count }) => {
         text-xs
         leading-5
         rounded-full
-        bg-red-500
         ring-2
         ring-white
         top-0
@@ -29,6 +29,7 @@ const Badge: React.FC<BadgeProps> = ({ count }) => {
         md:h-5
         md:w-5  
       `,
+        danger ? "bg-red-500" : "bg-sky-500",
         !count && "hidden"
       )}
     >

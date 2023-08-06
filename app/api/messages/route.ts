@@ -2,6 +2,7 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import { pusherServer } from "@/app/libs/pusher";
+import getUnreadCountInConversation from "@/app/actions/getUnreadCountInConversation";
 
 export async function POST(request: Request) {
   try {
@@ -72,11 +73,17 @@ export async function POST(request: Request) {
       updatedConversation.messages[updatedConversation.messages.length - 1];
 
     // 如果在群组里，每个人都要推送
-    updatedConversation.users.map(user => {
+    updatedConversation.users.map(async user => {
       // 推送最后一条消息，用来显示在sidebar列表里
+      let unreadCount = await getUnreadCountInConversation(
+        user.id,
+        conversationId
+      );
+
       pusherServer.trigger(user.email!, "conversation:update", {
         id: conversationId,
         messages: [lastMessage],
+        unreadCount: unreadCount,
       });
     });
 
