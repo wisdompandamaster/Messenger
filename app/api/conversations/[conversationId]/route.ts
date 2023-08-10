@@ -32,6 +32,32 @@ export async function DELETE(
       return new NextResponse("Invalid ID", { status: 400 });
     }
 
+    // // 查询与该会话相关的所有用户
+    // const users = await prisma.user.findMany({
+    //   where: {
+    //     OR: existingConversation.userIds.map(userId => ({ id: userId })),
+    //   },
+    // });
+
+    // // 更新用户的 seenMessageIds 和 conversationIds
+    // for (const user of users) {
+    //   const updatedSeenMessageIds = user.seenMessageIds.filter(
+    //     id => !existingConversation.messagesIds.includes(id.toString())
+    //   );
+
+    //   const updatedConversationIds = user.conversationIds.filter(
+    //     id => id !== conversationId
+    //   );
+
+    //   await prisma.user.update({
+    //     where: { id: user.id },
+    //     data: {
+    //       seenMessageIds: updatedSeenMessageIds,
+    //       conversationIds: updatedConversationIds,
+    //     },
+    //   });
+    // }
+
     const deletedConversation = await prisma.conversation.deleteMany({
       where: {
         id: conversationId,

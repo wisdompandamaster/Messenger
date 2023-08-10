@@ -2,6 +2,7 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import getUnreadCountInConversation from "@/app/actions/getUnreadCountInConversation";
 import prisma from "@/app/libs/prismadb";
 import { pusherServer } from "@/app/libs/pusher";
+import { tr } from "date-fns/locale";
 import { NextResponse } from "next/server";
 
 interface IParams {
@@ -52,8 +53,20 @@ export async function POST(request: Request, { params }: { params: IParams }) {
         id: lastMessage.id,
       },
       include: {
-        sender: true,
-        seen: true,
+        sender: {
+          select: {
+            id: true,
+            email: true,
+            image: true,
+            name: true,
+          },
+        },
+        seen: {
+          select: {
+            email: true,
+            name: true,
+          },
+        },
       },
       data: {
         seen: {
@@ -71,7 +84,7 @@ export async function POST(request: Request, { params }: { params: IParams }) {
 
     // Update all connections with new seen
     // TODO: updatedMessage太长，之前删掉了对话，但是user里面的seenMessagIds没删掉
-    console.log("error: " + JSON.stringify(updatedMessage));
+    // console.log("error: " + JSON.stringify(updatedMessage));
     await pusherServer.trigger(currentUser.email, "conversation:update", {
       id: conversationId,
       messages: [updatedMessage],
