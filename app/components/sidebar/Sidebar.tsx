@@ -5,7 +5,7 @@ import getUnreadMessageCount from "@/app/actions/getUnreadMessageCount";
 
 async function Sidebar({ children }: { children: React.ReactNode }) {
   const currentUser = await getCurrentUser();
-  const unreadMessageCount = await getUnreadMessageCount();
+  const unreadMessageCount = await getUnreadMessageCount(currentUser?.id!);
 
   return (
     <div className='h-full'>

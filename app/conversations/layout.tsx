@@ -7,6 +7,7 @@ import getCurrentUser from "../actions/getCurrentUser";
 import { FullConversationType } from "../types";
 import { useEffect } from "react";
 import { pusherClient } from "../libs/pusher";
+import useTotalUnread from "../hooks/useTotalUnread";
 
 export default async function ConversationLayout({
   children,

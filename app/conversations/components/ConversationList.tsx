@@ -14,6 +14,7 @@ import Users from "@/app/users/page";
 import { useSession } from "next-auth/react";
 import { pusherClient } from "@/app/libs/pusher";
 import { find } from "lodash";
+import useTotalUnread from "@/app/hooks/useTotalUnread";
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
@@ -31,6 +32,13 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const router = useRouter();
 
   const { conversationId, isOpen } = useConversation();
+
+  const { set } = useTotalUnread();
+
+  // 通过set 全局 store 来设置所有的未读消息
+  useEffect(() => {
+    set(items);
+  }, [items, set]);
 
   // pusherKey, 就是当前用户email
   const pusherKey = useMemo(() => {
@@ -57,8 +65,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
     };
 
     const updateHandler = (conversation: FullConversationType) => {
-      setItems(current =>
-        current.map(currentConversation => {
+      setItems(current => {
+        let newItems = current.map(currentConversation => {
           // 找到list中要更新最新消息的那个
           if (currentConversation.id === conversation.id) {
             return {
@@ -69,8 +77,10 @@ const ConversationList: React.FC<ConversationListProps> = ({
           }
 
           return currentConversation;
-        })
-      );
+        });
+        // set(newItems);
+        return newItems;
+      });
     };
 
     // 这里去掉了conversaitonList的之后，再从[conversationId]跳转回去
@@ -96,7 +106,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       pusherClient.unbind("conversation:update", updateHandler);
       pusherClient.unbind("conversation:remove", removeHandler);
     };
-  }, [pusherKey, conversationId, router]);
+  }, [pusherKey, conversationId, router, set]);
 
   console.log("组件conversationList");
 

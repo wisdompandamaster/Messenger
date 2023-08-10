@@ -1,7 +1,7 @@
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "./getCurrentUser";
 
-const getUnreadMessageCount = async () => {
+const getUnreadMessageCount = async (userId: string) => {
   const currentUser = await getCurrentUser();
 
   // 保持返回值类型一致，都为 number
@@ -15,7 +15,7 @@ const getUnreadMessageCount = async () => {
       where: {
         seen: {
           some: {
-            id: currentUser.id,
+            id: userId,
           },
         },
       },
@@ -31,7 +31,7 @@ const getUnreadMessageCount = async () => {
           conversation: {
             users: {
               some: {
-                id: currentUser.id,
+                id: userId,
               },
             },
           },
@@ -46,13 +46,13 @@ const getUnreadMessageCount = async () => {
       where: {
         seen: {
           none: {
-            id: currentUser.id,
+            id: userId,
           },
         },
         conversation: {
           users: {
             some: {
-              id: currentUser.id,
+              id: userId,
             },
           },
         },

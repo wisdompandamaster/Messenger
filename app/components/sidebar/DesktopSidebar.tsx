@@ -7,6 +7,7 @@ import { User } from "@prisma/client";
 import Avatar from "../Avatar";
 import DesktopItem from "./DesktopItem";
 import SettingsModal from "./SettingsModal";
+import useTotalUnread from "@/app/hooks/useTotalUnread";
 
 interface DesktopSidebarProps {
   currentUser: User;
@@ -19,6 +20,11 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
 }) => {
   const routes = useRoutes();
   const [isOpen, setIsOpen] = useState(false);
+
+  const { conversations } = useTotalUnread();
+  let totalUnread = conversations.reduce((sum, item) => {
+    return sum + item.unreadCount! || 0;
+  }, 0);
 
   return (
     <>
@@ -69,7 +75,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
                 label={item.label}
                 icon={item.icon}
                 active={item.active}
-                badge={item.badge && unreadMessageCount}
+                badge={item.badge && totalUnread}
                 onClick={item.onClick}
               />
             ))}

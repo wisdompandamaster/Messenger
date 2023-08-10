@@ -70,6 +70,8 @@ export async function POST(request: Request, { params }: { params: IParams }) {
     );
 
     // Update all connections with new seen
+    // TODO: updatedMessage太长，之前删掉了对话，但是user里面的seenMessagIds没删掉
+    console.log("error: " + JSON.stringify(updatedMessage));
     await pusherServer.trigger(currentUser.email, "conversation:update", {
       id: conversationId,
       messages: [updatedMessage],
