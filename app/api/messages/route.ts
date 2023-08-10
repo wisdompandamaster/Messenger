@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import { pusherServer } from "@/app/libs/pusher";
 import getUnreadCountInConversation from "@/app/actions/getUnreadCountInConversation";
+import getUnreadMessageCount from "@/app/actions/getUnreadMessageCount";
 
 export async function POST(request: Request) {
   try {
@@ -84,6 +85,12 @@ export async function POST(request: Request) {
         id: conversationId,
         messages: [lastMessage],
         unreadCount: unreadCount,
+      });
+
+      let totalUnreadCount = await getUnreadMessageCount();
+
+      pusherServer.trigger(user.email!, "conversation:totalUnread", {
+        totalUnreadCount: totalUnreadCount,
       });
     });
 

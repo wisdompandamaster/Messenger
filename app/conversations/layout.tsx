@@ -5,6 +5,8 @@ import ConversationList from "./components/ConversationList";
 import getUnreadCountInConversation from "../actions/getUnreadCountInConversation";
 import getCurrentUser from "../actions/getCurrentUser";
 import { FullConversationType } from "../types";
+import { useEffect } from "react";
+import { pusherClient } from "../libs/pusher";
 
 export default async function ConversationLayout({
   children,
