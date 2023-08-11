@@ -109,8 +109,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
     };
   }, [pusherKey, conversationId, router, set]);
 
-  console.log("组件conversationList");
-
   return (
     <>
       <GroupChatModal
