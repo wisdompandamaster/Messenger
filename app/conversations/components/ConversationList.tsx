@@ -35,6 +35,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
   const { set } = useTotalUnread();
 
+  // TODO:1 conversation页面缓存，切换有问题  2. 刚登录，没渲染conversation,就没有消息提示
   // 通过set 全局 store 来设置所有的未读消息
   useEffect(() => {
     set(items);
