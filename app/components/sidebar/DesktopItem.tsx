@@ -3,11 +3,6 @@
 import clsx from "clsx";
 import Link from "next/link";
 import Badge from "../Badge";
-import { useEffect, useMemo, useState } from "react";
-import { pusherClient } from "@/app/libs/pusher";
-import { useSession } from "next-auth/react";
-import { FullConversationType } from "@/app/types";
-import useTotalUnread from "@/app/hooks/useTotalUnread";
 
 interface DesktopItemProps {
   label: string;

@@ -18,6 +18,13 @@ export default async function ConversationLayout({
   const users = await getUsers();
   const currentUser = await getCurrentUser();
 
+  // const data = await fetch("http://localhost:3000/api/conversations/get", {
+  //   cache: "no-store",
+  // });
+
+  // console.log(data);
+
+  // const conversation: FullConversationType[] = data.body;
   // 对其中每一个conversation, 求出它们的未读消息数量，来初始化 unreadCount
   conversations.forEach(async item => {
     item.unreadCount = await getUnreadCountInConversation(

@@ -3,7 +3,6 @@ import { useParams, usePathname } from "next/navigation";
 import { HiChat } from "react-icons/hi";
 import { HiArrowLeftOnRectangle, HiUsers } from "react-icons/hi2";
 import { signOut } from "next-auth/react";
-
 import useConversation from "./useConversation";
 
 const useRoutes = () => {
@@ -23,7 +22,7 @@ const useRoutes = () => {
         label: "User",
         href: "/users",
         icon: HiUsers,
-        badge: true,
+        badge: false,
         active: pathname === "/users",
       },
       {
