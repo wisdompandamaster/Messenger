@@ -9,7 +9,7 @@ interface MobileItemProps {
   href: string;
   onClick?: () => void;
   active?: boolean;
-  badge: number | boolean;
+  badge: number;
 }
 
 const MobileItem: React.FC<MobileItemProps> = ({
