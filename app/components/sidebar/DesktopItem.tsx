@@ -10,7 +10,7 @@ interface DesktopItemProps {
   href: string;
   onClick?: () => void;
   active?: boolean;
-  badge: number | boolean;
+  badge: number;
 }
 
 const DesktopTtem: React.FC<DesktopItemProps> = ({

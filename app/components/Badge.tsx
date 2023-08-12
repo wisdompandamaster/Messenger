@@ -3,12 +3,12 @@
 import clsx from "clsx";
 
 interface BadgeProps {
-  // 设置为 false, 或数字为 0 时不显示 badge
-  count: number | boolean;
+  // 设置为 false, 或数字为 0 时不显示 badge, 默认为 0
+  count: number;
   danger?: boolean;
 }
 
-const Badge: React.FC<BadgeProps> = ({ count, danger }) => {
+const Badge: React.FC<BadgeProps> = ({ count = 0, danger }) => {
   return (
     <div
       className={clsx(

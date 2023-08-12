@@ -26,6 +26,9 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     return sum + item.unreadCount! || 0;
   }, 0);
 
+  // 每个 sidebar item 要显示的 badge 类型
+  const Badge = [totalUnread, 0, 0];
+
   return (
     <>
       <SettingsModal
@@ -68,14 +71,14 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
           space-y-1
         '
           >
-            {routes.map(item => (
+            {routes.map((item, index) => (
               <DesktopItem
                 key={item.label}
                 href={item.href}
                 label={item.label}
                 icon={item.icon}
                 active={item.active}
-                badge={item.badge && totalUnread}
+                badge={Badge[index]}
                 onClick={item.onClick}
               />
             ))}
