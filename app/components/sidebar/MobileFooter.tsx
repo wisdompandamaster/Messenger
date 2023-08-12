@@ -12,6 +12,8 @@ const MobileFooter: React.FC<MobileFooterProps> = ({ unreadMessageCount }) => {
   const routes = useRoutes();
   const { isOpen } = useConversation();
 
+  const Badge = [0, 0, 0];
+
   if (isOpen) {
     return null;
   }
@@ -31,13 +33,13 @@ const MobileFooter: React.FC<MobileFooterProps> = ({ unreadMessageCount }) => {
         lg:hidden
       '
     >
-      {routes.map(route => (
+      {routes.map((route, index) => (
         <MobileItem
           key={route.href}
           href={route.href}
           active={route.active}
           icon={route.icon}
-          badge={route.badge && unreadMessageCount}
+          badge={Badge[index]}
           onClick={route.onClick}
         />
       ))}
