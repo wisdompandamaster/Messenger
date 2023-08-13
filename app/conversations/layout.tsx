@@ -18,22 +18,19 @@ export default async function ConversationLayout({
   const users = await getUsers();
   const currentUser = await getCurrentUser();
 
-  // const data = await fetch("http://localhost:3000/api/conversations/get", {
+  // const data = await fetch("https://newtab.wisdompanda.com/api/news/get/", {
   //   cache: "no-store",
   // });
-
-  // console.log(data);
+  // console.log(data.body);
 
   // const conversation: FullConversationType[] = data.body;
   // 对其中每一个conversation, 求出它们的未读消息数量，来初始化 unreadCount
-  conversations.forEach(async item => {
+  for (let item of conversations) {
     item.unreadCount = await getUnreadCountInConversation(
       currentUser?.id!,
       item.id
     );
-  });
-
-  console.log("组件conversation layout");
+  }
 
   return (
     <Sidebar>
