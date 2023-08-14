@@ -26,8 +26,10 @@ model User {
   seenMessageIds String[]  @db.ObjectId
   seenMessages   Message[] @relation("Seen", fields: [seenMessageIds], references: [id])
 
-  accounts Account[]
-  messages Message[]
+  accounts       Account[]
+  messages       Message[]
+  sendFriends    Friend[]  @relation("Send")
+  receiveFriends Friend[]  @relation("Receive")
 }
 
 model Account {
@@ -77,4 +79,18 @@ model Message {
 
   senderId String @db.ObjectId
   sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model Friend {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  friendId    String   @db.ObjectId
+  status      String
+  userGroup   String?
+  friendFroup String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user   User @relation("Send", fields: [userId], references: [id], onDelete: Cascade)
+  friend User @relation("Receive", fields: [friendId], references: [id], onDelete: Cascade)
 }
