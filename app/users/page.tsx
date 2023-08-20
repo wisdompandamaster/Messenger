@@ -1,6 +1,9 @@
+import getCurrentUser from "../actions/getCurrentUser";
 import EmptyState from "../components/EmptyState";
+import RequestCard from "./components/RequestCard";
 
-const Users = () => {
+const Users = async () => {
+  const currentUser = await getCurrentUser();
   return (
     <div
       className='
@@ -10,7 +13,8 @@ const Users = () => {
         h-full
       '
     >
-      <EmptyState />
+      {/* <EmptyState /> */}
+      <RequestCard user={currentUser!} />
     </div>
   );
 };
