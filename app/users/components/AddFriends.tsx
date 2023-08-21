@@ -4,6 +4,7 @@ import axios from "axios";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import AddFriendsInput from "./AddFriendsInput";
 import { HiPaperAirplane } from "react-icons/hi2";
+import toast from "react-hot-toast";
 
 const AddFriends = () => {
   const {
@@ -13,15 +14,22 @@ const AddFriends = () => {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      firendEmail: "",
+      friendEmail: "",
     },
   });
 
   const onSubmit: SubmitHandler<FieldValues> = data => {
     setValue("friendEmail", "", { shouldValidate: true });
-    // axios.post("/api/messages", {
-    //   ...data,
-    // });
+    axios
+      .post("/api/friends", {
+        ...data,
+      })
+      .then(data => {
+        toast.success(`Send Request to ${data.data.friend.name} Successfully!`);
+      })
+      .catch(e => {
+        toast.error(e.response.data);
+      });
   };
 
   return (
