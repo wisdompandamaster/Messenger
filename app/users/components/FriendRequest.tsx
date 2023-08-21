@@ -4,11 +4,11 @@ import Avatar from "@/app/components/Avatar";
 import { User } from "@prisma/client";
 import { HiX, HiCheck } from "react-icons/hi";
 
-interface RequestCardProps {
+interface FriendRequestProps {
   user: User;
 }
 
-const RequestCard: React.FC<RequestCardProps> = ({ user }) => {
+const FriendRequest: React.FC<FriendRequestProps> = ({ user }) => {
   return (
     <div
       className='
@@ -16,14 +16,23 @@ const RequestCard: React.FC<RequestCardProps> = ({ user }) => {
         gap-4 
         items-center
         h-20
-        w-72
         p-5
+        w-fit
         bg-neutral-100
         rounded-xl
-        m-5
     '
     >
       <Avatar user={user} />
+      <div
+        className='
+        flex
+        flex-col
+        justify-between
+      '
+      >
+        <p className='font-semibold'>{user.name}</p>
+        <p className='text-gray-400'>{user.email}</p>
+      </div>
       <div className='w-8 h-8 bg-sky-400 hover:bg-sky-500 grid place-items-center rounded-full transition hover:shadow-md'>
         <HiCheck className='font-semibold text-white w-3/4 h-3/4' />
       </div>
@@ -34,4 +43,4 @@ const RequestCard: React.FC<RequestCardProps> = ({ user }) => {
   );
 };
 
-export default RequestCard;
+export default FriendRequest;

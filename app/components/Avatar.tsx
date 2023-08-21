@@ -25,7 +25,8 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
            h-9
            w-9
            md:h-11
-           md:w-11
+           md:w-11  
+           select-none
         '
       >
         <Image
