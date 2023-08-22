@@ -1,11 +1,12 @@
 import getCurrentUser from "../actions/getCurrentUser";
+import getFriendRequests from "../actions/getFriendRequests";
 import getUsers from "../actions/getUsers";
 import EmptyState from "../components/EmptyState";
 import AddFriends from "./components/AddFriends";
 import RequestCard from "./components/FriendRequest";
 
 const Users = async () => {
-  const currentUser = await getCurrentUser();
+  const requests = await getFriendRequests();
   const users = await getUsers();
   return (
     <div
@@ -26,8 +27,8 @@ const Users = async () => {
          flex-wrap
       '
       >
-        {users.map(user => (
-          <RequestCard key={user.id} user={user!} />
+        {requests.map(request => (
+          <RequestCard key={request.user.id} user={request.user!} />
         ))}
       </div>
     </div>
