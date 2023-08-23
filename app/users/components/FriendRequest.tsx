@@ -2,13 +2,29 @@
 
 import Avatar from "@/app/components/Avatar";
 import { User } from "@prisma/client";
+import axios from "axios";
+import { useCallback } from "react";
+import toast from "react-hot-toast";
 import { HiX, HiCheck } from "react-icons/hi";
 
 interface FriendRequestProps {
+  id: string;
   user: User;
 }
 
-const FriendRequest: React.FC<FriendRequestProps> = ({ user }) => {
+const FriendRequest: React.FC<FriendRequestProps> = ({ id, user }) => {
+  const handleRequest = useCallback((id: string, option: string) => {
+    axios
+      .post("/api/friends/handle", {
+        id: id,
+        option: option,
+      })
+      .then(data => {
+        toast.success(`${option} ${data.data?.user.name} successfully!`);
+      })
+      .catch(() => toast.error("Something went wrong!"));
+  }, []);
+
   return (
     <div
       className='
@@ -33,10 +49,16 @@ const FriendRequest: React.FC<FriendRequestProps> = ({ user }) => {
         <p className='font-semibold'>{user.name}</p>
         <p className='text-gray-400'>{user.email}</p>
       </div>
-      <div className='w-8 h-8 bg-sky-400 hover:bg-sky-500 grid place-items-center rounded-full transition hover:shadow-md'>
+      <div
+        className='w-8 h-8 bg-sky-400 hover:bg-sky-500 grid place-items-center rounded-full transition hover:shadow-md'
+        onClick={() => handleRequest(id, "accept")}
+      >
         <HiCheck className='font-semibold text-white w-3/4 h-3/4' />
       </div>
-      <div className='w-8 h-8 bg-rose-500 hover:bg-rose-600 grid place-items-center rounded-full transition hover:shadow-md'>
+      <div
+        className='w-8 h-8 bg-rose-500 hover:bg-rose-600 grid place-items-center rounded-full transition hover:shadow-md'
+        onClick={() => handleRequest(id, "deny")}
+      >
         <HiX className='font-semibold text-white w-3/4 h-3/4' />
       </div>
     </div>

@@ -16,13 +16,7 @@ export async function POST(request: Request) {
 
     // 根据 friend id 查找记录
     if (option == "accept") {
-      const deleteFriendRequest = await prisma.friend.delete({
-        where: {
-          id: id,
-        },
-      });
-      return NextResponse.json(deleteFriendRequest);
-    } else {
+      // 如果接受，就标记为 accept
       const acceptFriendRequest = await prisma.friend.update({
         where: {
           id: id,
@@ -30,8 +24,30 @@ export async function POST(request: Request) {
         data: {
           status: option,
         },
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
       });
       return NextResponse.json(acceptFriendRequest);
+    } else {
+      // 如果拒绝，就删除记录
+      const deleteFriendRequest = await prisma.friend.delete({
+        where: {
+          id: id,
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+      return NextResponse.json(deleteFriendRequest);
     }
   } catch (error: any) {
     return new NextResponse("Internal Error", { status: 500 });

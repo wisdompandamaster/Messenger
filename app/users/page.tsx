@@ -28,7 +28,11 @@ const Users = async () => {
       '
       >
         {requests.map(request => (
-          <RequestCard key={request.user.id} user={request.user!} />
+          <RequestCard
+            key={request.user.id}
+            id={request.id}
+            user={request.user!}
+          />
         ))}
       </div>
     </div>
