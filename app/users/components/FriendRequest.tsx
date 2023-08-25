@@ -1,66 +1,65 @@
 "use client";
 
-import Avatar from "@/app/components/Avatar";
-import { User } from "@prisma/client";
-import axios from "axios";
-import { useCallback } from "react";
-import toast from "react-hot-toast";
-import { HiX, HiCheck } from "react-icons/hi";
+import { Friend } from "@prisma/client";
+import RequestCard from "./RequestCard";
+import { FullFriendType } from "@/app/types";
+import { useEffect, useMemo, useState } from "react";
+import { pusherClient } from "@/app/libs/pusher";
+import { useSession } from "next-auth/react";
 
 interface FriendRequestProps {
-  id: string;
-  user: User;
+  requests: FullFriendType[];
 }
 
-const FriendRequest: React.FC<FriendRequestProps> = ({ id, user }) => {
-  const handleRequest = useCallback((id: string, option: string) => {
-    axios
-      .post("/api/friends/handle", {
-        id: id,
-        option: option,
-      })
-      .then(data => {
-        toast.success(`${option} ${data.data?.user.name} successfully!`);
-      })
-      .catch(() => toast.error("Something went wrong!"));
-  }, []);
+const FriendRequest: React.FC<FriendRequestProps> = ({ requests }) => {
+  const session = useSession();
+
+  const [items, setItems] = useState(requests);
+
+  // pusherKey, 就是当前用户email
+  const pusherKey = useMemo(() => {
+    return session.data?.user?.email;
+  }, [session.data?.user?.email]);
+
+  useEffect(() => {
+    if (!pusherKey) {
+      return;
+    }
+
+    // 订阅对应属于自己的 channel
+    pusherClient.subscribe(pusherKey);
+
+    const handleFriendRequest = (newFrinedRequest: FullFriendType) => {
+      setItems(current => {
+        current.push(newFrinedRequest);
+        return current;
+      });
+    };
+
+    pusherClient.bind("friend:new", handleFriendRequest);
+
+    return () => {
+      pusherClient.unsubscribe(pusherKey);
+      pusherClient.unbind("friend:new", handleFriendRequest);
+    };
+  }, [pusherKey]);
 
   return (
     <div
       className='
-        flex 
-        gap-4 
-        items-center
-        h-20
-        p-5
-        w-fit
-        bg-neutral-100
-        rounded-xl
-    '
-    >
-      <Avatar user={user} />
-      <div
-        className='
-        flex
-        flex-col
-        justify-between
+         flex
+         gap-3
+         px-5
+         flex-wrap
       '
-      >
-        <p className='font-semibold'>{user.name}</p>
-        <p className='text-gray-400'>{user.email}</p>
-      </div>
-      <div
-        className='w-8 h-8 bg-sky-400 hover:bg-sky-500 grid place-items-center rounded-full transition hover:shadow-md'
-        onClick={() => handleRequest(id, "accept")}
-      >
-        <HiCheck className='font-semibold text-white w-3/4 h-3/4' />
-      </div>
-      <div
-        className='w-8 h-8 bg-rose-500 hover:bg-rose-600 grid place-items-center rounded-full transition hover:shadow-md'
-        onClick={() => handleRequest(id, "deny")}
-      >
-        <HiX className='font-semibold text-white w-3/4 h-3/4' />
-      </div>
+    >
+      {items.map(request => (
+        <RequestCard
+          key={request.user.email}
+          id={request.id}
+          user={request.user!}
+        />
+      ))}
     </div>
   );
 };

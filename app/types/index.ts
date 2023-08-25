@@ -1,4 +1,4 @@
-import { Conversation, Message, User } from "@prisma/client";
+import { Conversation, Friend, Message, User } from "@prisma/client";
 
 // 创建新的特殊类型，避免typescript类型冲突
 
@@ -11,4 +11,9 @@ export type FullConversationType = Conversation & {
   users: User[];
   messages: FullMessageType[];
   unreadCount?: number;
+};
+
+export type FullFriendType = Friend & {
+  user: User;
+  friend?: User;
 };

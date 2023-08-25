@@ -3,7 +3,8 @@ import getFriendRequests from "../actions/getFriendRequests";
 import getUsers from "../actions/getUsers";
 import EmptyState from "../components/EmptyState";
 import AddFriends from "./components/AddFriends";
-import RequestCard from "./components/FriendRequest";
+import FriendRequest from "./components/FriendRequest";
+import RequestCard from "./components/RequestCard";
 
 const Users = async () => {
   const requests = await getFriendRequests();
@@ -19,22 +20,7 @@ const Users = async () => {
     >
       <AddFriends />
       {/* <EmptyState /> */}
-      <div
-        className='
-         flex
-         gap-3
-         px-5
-         flex-wrap
-      '
-      >
-        {requests.map(request => (
-          <RequestCard
-            key={request.user.id}
-            id={request.id}
-            user={request.user!}
-          />
-        ))}
-      </div>
+      <FriendRequest requests={requests} />
     </div>
   );
 };

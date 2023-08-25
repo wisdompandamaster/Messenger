@@ -32,21 +32,13 @@ export async function POST(request: Request) {
         OR: [
           // 我已经发过的
           {
-            userId: {
-              equals: currentUser.id,
-            },
-            friendId: {
-              equals: existingFriend.id,
-            },
+            userId: currentUser.id,
+            friendId: existingFriend.id,
           },
           //   别人发给我的
           {
-            userId: {
-              equals: existingFriend.id,
-            },
-            friendId: {
-              equals: currentUser.id,
-            },
+            userId: existingFriend.id,
+            friendId: currentUser.id,
           },
         ],
       },
@@ -83,22 +75,29 @@ export async function POST(request: Request) {
         user: {
           select: {
             name: true,
+            email: true,
+            image: true,
           },
         },
         friend: {
           select: {
             name: true,
+            email: true,
+            image: true,
           },
         },
       },
     });
 
-    // Pusher Update all connections with new conversation
-    // newConversation.users.map(user => {
-    //   if (user.email) {
-    //     pusherServer.trigger(user.email, "conversation:new", newConversation);
-    //   }
-    // });
+    // 如果创建出来,就通过 pusher传递
+    if (newFrinedRequest.friend.email) {
+      console.log("push to" + newFrinedRequest.friend.email);
+      pusherServer.trigger(
+        newFrinedRequest.friend.email,
+        "friend:new",
+        newFrinedRequest
+      );
+    }
 
     return NextResponse.json(newFrinedRequest);
   } catch (error: any) {
