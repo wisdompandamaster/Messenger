@@ -2,12 +2,54 @@
 
 import { User } from "@prisma/client";
 import UserBox from "./UserBox";
+import { useSession } from "next-auth/react";
+import { useEffect, useMemo, useState } from "react";
+import { pusherClient, pusherServer } from "@/app/libs/pusher";
+import { FullFriendType } from "@/app/types";
 
 interface UserListProps {
-  items: User[];
+  friends: User[];
 }
 
-const UseerList: React.FC<UserListProps> = ({ items }) => {
+const UserList: React.FC<UserListProps> = ({ friends }) => {
+  const session = useSession();
+
+  // FIXME:can not show change in time in UserList
+  const [items, setItems] = useState(friends);
+
+  // pusherKey, 就是当前用户email
+  const pusherKey = useMemo(() => {
+    return session.data?.user?.email;
+  }, [session.data?.user?.email]);
+
+  useEffect(() => {
+    if (!pusherKey) {
+      return;
+    }
+
+    // 订阅对应属于自己的 channel
+    pusherClient.subscribe(pusherKey);
+
+    const handleFriendAccept = (acceptFriendRequest: FullFriendType) => {
+      console.log("add friend in userlist");
+      setItems(current => {
+        if (acceptFriendRequest.user.email == pusherKey) {
+          current.push(acceptFriendRequest.friend!);
+        } else {
+          current.push(acceptFriendRequest.user);
+        }
+        return current;
+      });
+    };
+
+    pusherClient.bind("friend:accept", handleFriendAccept);
+
+    return () => {
+      pusherClient.unsubscribe(pusherKey);
+      pusherClient.unbind("friend:accept", handleFriendAccept);
+    };
+  }, [pusherKey]);
+
   return (
     <aside
       className='
@@ -40,11 +82,11 @@ const UseerList: React.FC<UserListProps> = ({ items }) => {
           </div>
         </div>
         {items.map(item => (
-          <UserBox key={item.id} data={item} />
+          <UserBox key={item.email} data={item} />
         ))}
       </div>
     </aside>
   );
 };
 
-export default UseerList;
+export default UserList;

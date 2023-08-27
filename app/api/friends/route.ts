@@ -91,7 +91,6 @@ export async function POST(request: Request) {
 
     // 如果创建出来,就通过 pusher传递
     if (newFrinedRequest.friend.email) {
-      console.log("push to" + newFrinedRequest.friend.email);
       pusherServer.trigger(
         newFrinedRequest.friend.email,
         "friend:new",

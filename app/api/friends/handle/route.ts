@@ -28,10 +28,33 @@ export async function POST(request: Request) {
           user: {
             select: {
               name: true,
+              email: true,
+              image: true,
+            },
+          },
+          friend: {
+            select: {
+              name: true,
+              email: true,
+              image: true,
             },
           },
         },
       });
+
+      if (acceptFriendRequest) {
+        pusherServer.trigger(
+          acceptFriendRequest.user.email!,
+          "friend:accept",
+          acceptFriendRequest
+        );
+        pusherServer.trigger(
+          acceptFriendRequest.friend.email!,
+          "friend:accept",
+          acceptFriendRequest
+        );
+      }
+
       return NextResponse.json(acceptFriendRequest);
     } else {
       // 如果拒绝，就删除记录
@@ -43,10 +66,33 @@ export async function POST(request: Request) {
           user: {
             select: {
               name: true,
+              email: true,
+              image: true,
+            },
+          },
+          friend: {
+            select: {
+              name: true,
+              email: true,
+              image: true,
             },
           },
         },
       });
+
+      if (deleteFriendRequest) {
+        pusherServer.trigger(
+          deleteFriendRequest.user.email!,
+          "friend:deny",
+          deleteFriendRequest
+        );
+        pusherServer.trigger(
+          deleteFriendRequest.friend.email!,
+          "friend:deny",
+          deleteFriendRequest
+        );
+      }
+
       return NextResponse.json(deleteFriendRequest);
     }
   } catch (error: any) {

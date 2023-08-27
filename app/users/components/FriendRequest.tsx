@@ -36,11 +36,29 @@ const FriendRequest: React.FC<FriendRequestProps> = ({ requests }) => {
       });
     };
 
+    const handleFriendAccept = (acceptFriendRequest: FullFriendType) => {
+      console.log("delet the card");
+      setItems(current => {
+        return current.filter(item => item.id !== acceptFriendRequest.id);
+      });
+    };
+
+    const handleFriendDeny = (denyFriendRequest: FullFriendType) => {
+      console.log("delet the card");
+      setItems(current => {
+        return current.filter(item => item.id !== denyFriendRequest.id);
+      });
+    };
+
     pusherClient.bind("friend:new", handleFriendRequest);
+    pusherClient.bind("friend:accept", handleFriendAccept);
+    pusherClient.bind("friend:deny", handleFriendDeny);
 
     return () => {
       pusherClient.unsubscribe(pusherKey);
       pusherClient.unbind("friend:new", handleFriendRequest);
+      pusherClient.unbind("friend:accept", handleFriendAccept);
+      pusherClient.unbind("friend:deny", handleFriendDeny);
     };
   }, [pusherKey]);
 

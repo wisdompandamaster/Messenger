@@ -14,7 +14,7 @@ export default async function UsersLayout({
     // @ts-expext-error Server Component
     <Sidebar>
       <div className='h-full'>
-        <UserList items={friends} />
+        <UserList friends={friends} />
         {children}
       </div>
     </Sidebar>
