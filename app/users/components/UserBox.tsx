@@ -6,6 +6,7 @@ import { User } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
+import { FiMoreHorizontal } from "react-icons/fi";
 
 interface UserBoxProps {
   data: User;
@@ -70,6 +71,10 @@ const UserBox: React.FC<UserBoxProps> = ({ data }) => {
               </p>
             </div>
           </div>
+        </div>
+        {/* TODO: complete the friend delete */}
+        <div>
+          <FiMoreHorizontal />
         </div>
       </div>
     </>
